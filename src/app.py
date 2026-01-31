@@ -4,11 +4,11 @@ from database import init_db, get_sessions, save_message, get_messages_by_sessio
 from ingestion import AegisIngestor
 from engine import AegisEngine
 from dotenv import load_dotenv
+API_KEY = st.secrets["GEMINI_API_KEY"]
 
 # --- INITIALIZATION ---
 init_db()
 load_dotenv()
-API_KEY = os.getenv("GEMINI_API_KEY")
 
 st.set_page_config(page_title="Buddy - Aegis Audit", layout="wide", page_icon="🛡️")
 
