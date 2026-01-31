@@ -1,0 +1,9 @@
+streamlit
+google-generativeai
+langchain-google-genai
+langchain-community
+langchain
+chromadb
+docling
+python-dotenv
+pysqlite3-binary
