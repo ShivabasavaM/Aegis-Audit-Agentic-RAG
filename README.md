@@ -1,6 +1,6 @@
-# 🛡️ Aegis-Audit: RAG Compliance Auditor(Your Intelligent Document Verification Assistant)
+# 🛡️ Compliance Auditor | Agentic RAG & Layout-Aware Extraction
 
-**Aegis-Audit** (nicknamed **Buddy**) is a universal Agentic RAG system designed to automate document auditing, gap analysis, and compliance verification. By leveraging the **Gemini 2.5 Flash** model, Buddy can ingest complex documentation and provide structured, actionable insights in seconds.
+**Aegis-Audit** (nicknamed **Buddy**) is a Agentic RAG system designed to automate document auditing, gap analysis, and compliance verification. By leveraging the **Gemini 2.5 Flash** model, Buddy can ingest complex documentation and provide structured, actionable insights in seconds.
 
 ## 🚀 Key Features
 - **Buddy Persona**: A friendly, intelligent assistant that handles general inquiries while remaining ready for deep-dive audits.
