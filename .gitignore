@@ -1,15 +1,17 @@
-# Python
-__pycache__/
-*.py[cod]
-venv_new/
+# Sensitive Keys
 .env
+.streamlit/secrets.toml
 
-# Project Specific
-chroma_db/
-chat_history.db
-temp_*.pdf
+# Heavy Data & Databases
+db/
+*.db
+*.sqlite3
 
-# Mac System Files
+# Python compiled files
+__pycache__/
+*.pyc
+
+# System files
 .DS_Store
-
-.streamlit/
+venv/
+venv/
