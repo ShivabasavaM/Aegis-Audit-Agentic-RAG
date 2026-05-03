@@ -140,9 +140,9 @@ This improves:
 
 ---
 
-## 🖥️ Demo
+## 🖥️ How it Works 
 
-https://github.com/user-attachments/assets/267d9467-e34b-4007-84dd-b75ead855e02
+https://github.com/user-attachments/assets/2e329003-7a38-430d-bcb5-b9bed2bfe8da
 
 ---
 
