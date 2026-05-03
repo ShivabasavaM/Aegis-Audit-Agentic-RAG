@@ -1,6 +1,6 @@
 # Aegis Audit: Agentic Compliance RAG
 
-**🟢 Live Demo:** https://aegis-audit-acr.vercel.app/
+**🟢 Live Demo:** [Click me to visit the Website](https://aegis-audit-acr.vercel.app/)
 *(Note: The backend is hosted on Render's EcoFree tier. Please allow a few seconds for the initial cold start).*
 
 ## 📌 Problem
@@ -142,7 +142,7 @@ This improves:
 
 ## 🖥️ How it Works 
 
-https://github.com/user-attachments/assets/2e329003-7a38-430d-bcb5-b9bed2bfe8da
+https://github.com/user-attachments/assets/62aa3ebe-b4c2-44da-9a08-35066274baf9
 
 ---
 
