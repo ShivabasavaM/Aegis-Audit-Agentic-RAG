@@ -1,25 +1,190 @@
-# 🛡️ Compliance Auditor | Agentic RAG & Layout-Aware Extraction
+# Aegis Audit: Agentic Compliance RAG
 
-**Aegis-Audit** (nicknamed **Buddy**) is a Agentic RAG system designed to automate document auditing, gap analysis, and compliance verification. By leveraging the **Gemini 2.5 Flash** model, Buddy can ingest complex documentation and provide structured, actionable insights in seconds.
+**🟢 Live Demo:** [Click here to view the deployed application]([https://your-vercel-app-link.vercel.app](https://aegis-audit-acr.vercel.app/)
+*(Note: The backend is hosted on Render's EcoFree tier. Please allow a few seconds for the initial cold start).*
 
-## 🚀 Key Features
-- **Buddy Persona**: A friendly, intelligent assistant that handles general inquiries while remaining ready for deep-dive audits.
-- **Self-Healing Document Logic**: Dynamically identifies outdated anchors or conflicting clauses between documents and suggests corrective updates.
-- **Universal Alignment Auditor**: Performs clause-by-clause mapping between a "Target" (Reference Document) and "Source" (Internal Policy) to identify critical gaps.
-- **Layout-Aware Ingestion**: Utilizes Docling to understand complex tables, headers, and document structures for superior RAG accuracy.
-- **Session Isolation**: Employs unique ChromaDB collections per chat session to ensure zero data leakage between different audits.
+## 📌 Problem
 
-## 🛠️ Tech Stack
-- **LLM**: Google Gemini 2.5 Flash (Optimized for speed and reasoning)
-- **Framework**: LangChain (Agentic orchestration & RAG)
-- **Parsing**: Docling (High-fidelity PDF processing)
-- **Vector DB**: ChromaDB (Stateful document embeddings)
-- **Database**: SQLite3 (Persistent chat threads and session management)
-- **UI**: Streamlit (Responsive streaming chat interface)
+Enterprise compliance teams spend significant time manually cross-referencing internal policies against evolving regulatory frameworks (e.g., Dodd-Frank, Indian Contract Act).  
 
-## 📦 How to Use
-1. **Chat Mode**: Start talking to Buddy. He’s a great general assistant!
-2. **Audit Mode**: 
-   - Upload your **Target Document** (The standard or law you need to meet).
-   - Upload your **Source Document** (Your internal policy or draft).
-   - Click "Enable Audit Mode" and ask Buddy to "Perform an alignment audit" or "Check for outdated mandates."
+Traditional LLM-based systems struggle in this setting due to:
+- Hallucination of legal clauses  
+- Lack of structured, multi-step reasoning  
+- Inconsistent traceability of outputs  
+
+---
+
+## ⚙️ Approach
+
+### 🧠 Model
+- Gemini 2.5 Flash (Inference + Embeddings)
+
+### 🔄 Pipeline
+
+**Ingestion**
+- LlamaParse for structured PDF extraction  
+- LangChain text splitters for chunking  
+
+**Storage**
+- Pinecone Serverless (3072-d embeddings)  
+- Session-based ephemeral namespaces  
+
+**Orchestration**
+- Event-driven Python backend  
+- Parallel processing using `ThreadPoolExecutor`  
+- Multi-step verification loop per audit pillar  
+
+**Client**
+- React (Vite) frontend  
+- Streaming responses with defensive rendering  
+- `.docx` report generation via in-memory buffers  
+
+---
+
+## 🤔 Why This Approach?
+
+Instead of relying on a single prompt, the system follows a structured **Agentic RAG pipeline**:
+
+- Breaks compliance auditing into **8 legal pillars**  
+- Runs each pillar as an independent reasoning thread  
+- Retrieves context → verifies → synthesizes output  
+
+This improves:
+- Consistency  
+- Traceability  
+- Reduction in hallucination  
+
+---
+
+## 🏗️ Architecture
+
+      ┌───────────────────────────────────────────────────────────┐
+      │                   USER INTERFACE (React + Vite)           │
+      │   (Hosted on Vercel)                                      │
+      └──────────────┬──────────────────────────────▲─────────────┘
+                     │                              │
+           [1] PDF Uploads / Queries        [6] Streaming Response /
+                     │                          .docx Report
+                     ▼                              │
+      ┌─────────────────────────────────────────────┴─────────────┐
+      │                  API LAYER (FastAPI + Python)             │
+      │   (Hosted on Render)                                      │
+      └──────────────┬──────────────────────────────┬─────────────┘
+                     │                              │
+         ┌───────────▼───────────┐      ┌───────────▼───────────┐
+         │  INGESTION PIPELINE   │      │   AGENTIC AUDIT CORE  │
+         │ (Session-Isolated)    │      │ (Parallel Processing) │
+         └───────────┬───────────┘      └───────────┬───────────┘
+                     │                              │
+      [2] LlamaParse (PDF Extraction)   [4] 8-Pillar Analysis Threads
+                     │                  (Capacity, Consent, etc.)
+                     ▼                              │
+      [3] Gemini Embedding Engine       [5] Self-Correction Loop
+      (models/gemini-embedding-2)       (Verification vs. Source)
+                     │                              │
+                     ▼                              ▼
+      ┌───────────────────────────────────────────────────────────┐
+      │                VECTOR DATABASE (Pinecone)                 │
+      │   (Ephemeral Session-Based Namespaces / Serverless)       │
+      └───────────────────────────────────────────────────────────┘
+
+---
+
+## 📊 Results
+
+### Metrics
+- Evaluated using **RAGAS** (Faithfulness, Answer Relevancy)  
+- Achieved strong alignment between generated outputs and source context  
+
+### Performance
+- Reduced audit time from ~3.5 minutes (sequential) → ~40 seconds (parallel execution)
+
+### Observations
+- Verification loop reduced cases where the model inferred beyond provided context  
+- Improved reliability in structured legal analysis  
+
+---
+
+## ⚖️ Tradeoffs
+
+### Accuracy vs Latency
+- Introduced a verification step (secondary LLM call)  
+- Added ~2–3 seconds per pillar  
+- Improved output reliability and reduced hallucination  
+
+### Security vs Persistence
+- Implemented **ephemeral vector storage**
+- Data tied to session lifecycle  
+- Automatic deletion using `index.delete()` after session ends  
+
+---
+
+## 🧪 Failures & Learnings
+
+### 1. API Rate Limiting & UI Failures
+- High retrieval (`k=10`) across 8 threads caused API quota errors  
+- Resulted in frontend crash (empty render state)
+
+**Fix**
+- Reduced retrieval size (`k=5`)  
+- Added defensive rendering (`?.`) in React  
+
+---
+
+### 2. Memory vs Disk I/O Bottleneck
+- Writing `.docx` to disk caused backend failures  
+
+**Fix**
+- Switched to in-memory document generation using `io.BytesIO()`  
+- Streamed file directly via FastAPI `StreamingResponse`  
+
+---
+
+## 🖥️ Demo
+
+> *(Replace with actual screenshot or GIF)*
+
+![UI Demo](https://via.placeholder.com/800x400.png?text=UI+Screenshot+or+GIF)
+
+---
+
+## 🚀 How to Run
+
+### 1. Backend Setup
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn api:app --reload
+```
+
+### 2. Frontend Setup
+```
+cd frontend
+npm install
+npm run dev
+```
+
+### 3. Environment Variables
+Create .env file in the backend directory and add respective api's
+```
+GEMINI_API_KEY=your_google_api_key
+PINECONE_API_KEY=your_pinecone_key
+LLAMA_CLOUD_API_KEY=your_llamaparse_key
+```
+
+🔗 Tech Stack
+LLM & RAG: Gemini, LangChain
+Parsing: LlamaParse
+Vector DB: Pinecone
+Backend: FastAPI, Python
+Frontend: React (Vite)
+Concurrency: ThreadPoolExecutor
+
+📌 Future Improvements
+Add monitoring for LLM responses
+Improve evaluation with real-world compliance datasets
+Introduce caching for repeated queries
+Optimize cost and latency tradeoffs
