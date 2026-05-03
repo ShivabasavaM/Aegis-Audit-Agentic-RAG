@@ -1,17 +1,19 @@
-# Sensitive Keys
+# Security 
 .env
-.streamlit/secrets.toml
 
-# Heavy Data & Databases
-db/
-*.db
-*.sqlite3
-
-# Python compiled files
+# Python Virtual Environments
+.venv/
+venv/
 __pycache__/
 *.pyc
 
-# System files
+# Node/React
+frontend/node_modules/
+frontend/dist/
 .DS_Store
-venv/
-venv/
+
+# Databases & Evaluation Artifacts
+*.db
+*.sqlite3
+*.jsonl
+*.csv
