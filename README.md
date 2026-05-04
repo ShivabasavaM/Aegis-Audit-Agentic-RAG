@@ -142,7 +142,7 @@ This improves:
 
 ## 🖥️ How it Works 
 
-https://github.com/user-attachments/assets/62aa3ebe-b4c2-44da-9a08-35066274baf9
+https://github.com/user-attachments/assets/251031bf-5fff-439c-a4eb-5faabd288013
 
 ---
 
